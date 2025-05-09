@@ -1,0 +1,32 @@
+import java.util.Arrays;
+
+public class MaterialProperties {
+    // Constants
+    public static final int nkt_deb = 78;
+    public static final int nrho_deb = 30;
+    public static final int nhv_deb = 78;
+    public static final int nie_eos = 100;
+    public static final int nrho_eos = 20;
+
+    // Opacity arrays
+    public double[] hnur_deb = new double[nhv_deb + 1];
+    public double[] kt_deb = new double[nkt_deb]; // debris T in eV
+    public double[][] ne_deb = new double[nkt_deb][nrho_deb];
+    public double[] rho_deb = new double[nrho_deb];
+    public double[][][] uk_deb = new double[nkt_deb][nrho_deb][nhv_deb]; // Rosseland
+    public double[][][] uk_debpl = new double[nkt_deb][nrho_deb][nhv_deb]; // Planck
+    public double[][] bdeb = new double[nkt_deb][nhv_deb];
+
+    // EOS arrays
+    public double[] rho_tabl2 = new double[nrho_eos]; // density table for debris
+    public double[] sie_tabl2 = new double[nie_eos]; // sie table for debris
+    public double[][] fp2 = new double[nie_eos][nrho_eos]; // gamma - 1 table for debris
+    public double[][] gt2 = new double[nie_eos][nrho_eos]; // T/sie table for debris
+    public double[][] ss2 = new double[nie_eos][nrho_eos]; // sound speed for debris
+
+    // Constructor
+    public MaterialProperties() {
+        // Initialization can be done here if needed
+    }
+}
+
