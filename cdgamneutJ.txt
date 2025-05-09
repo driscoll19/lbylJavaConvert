@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+public class SimulationParameters {
+    // Constants
+    public static final int NUM_DIST_BINS = 1549;
+    public static final int NUM_E_BINS = 26;
+    public static final int NUM_N_BINS = 21;
+    public static final int NUM_R_BINS = 200;
+    public static final int NUM_T_BINS = 500;
+
+    // Hard x-rays, gamma rays
+    public double[] DIST_MAX = new double[NUM_E_BINS];
+    public double[] E_BINS = new double[NUM_E_BINS];
+    public double[] E_INTGL = new double[NUM_E_BINS];
+    public double[][] E_SUM = new double[NUM_E_BINS][NUM_DIST_BINS];
+    public double[][] ENERGY_DEPOSITION = new double[NUM_E_BINS][NUM_DIST_BINS];
+    public double[] HARD_XRAY_GAMMA_YLDS = new double[NUM_E_BINS];
+    public int i_gam_dep;
+    public int[] MAX_BIN = new int[NUM_E_BINS];
+    public int[] NUM_BINS = new int[NUM_E_BINS];
+
+    // Neutrons
+    public double[][][] E_NEUTRON = new double[NUM_N_BINS][NUM_T_BINS][NUM_R_BINS];
+    public int i_neut_dep;
+    public double[] N_INTGL = new double[NUM_N_BINS];
+    public double[][] N_SUM = new double[NUM_N_BINS][NUM_R_BINS];
+    public double R_0;
+    public int[][] R_BIN_MAX = new int[NUM_N_BINS][NUM_T_BINS];
+    public double R_MULT;
+    public double[] SOURCE_NEUTRONS = new double[NUM_N_BINS];
+    public double T_0;
+    public double T_MULT;
+
+    // Common blocks can be represented as class members
+}
+
