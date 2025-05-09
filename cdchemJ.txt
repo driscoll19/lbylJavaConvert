@@ -1,0 +1,322 @@
+// Required dependencies: None for this snippet.
+
+public class ChemistryConstants {
+
+    // Parameters
+    //
+    // INTEGER LTBL
+    // PARAMETER (LTBL=3000)
+    public static final int LTBL = 3000;
+
+    // INTEGER MXITIME
+    // PARAMETER(MXITIME=100000)
+    public static final int MXITIME = 100000;
+
+    // INTEGER NRCTN				! max number of chem reactions
+    // PARAMETER (NRCTN=700)
+    public static final int NRCTN = 700;
+
+    // INTEGER NSP
+    // PARAMETER (NSP=43)
+    public static final int NSP = 43;
+
+    // INTEGER NST				! max number of elements = 10
+    // PARAMETER (NST=10)
+    public static final int NST = 10;
+
+    // INTEGER NXSEC				! no. of rcn cross sections in the tables
+    // PARAMETER (NXSEC=50)
+    public static final int NXSEC = 50;
+
+    // INTEGER INDXN4S
+    // PARAMETER(INDXN4S = 1)
+    public static final int INDXN4S = 1;
+
+    // INTEGER INDXO3P
+    // PARAMETER(INDXO3P = 8)
+    public static final int INDXO3P = 8;
+
+    // INTEGER MXNTF				! length of TPMAX used in EQUIRO
+    // PARAMETER (MXNTF = 200)
+    public static final int MXNTF = 200;
+
+    // INTEGER MXSPE
+    // PARAMETER(MXSPE = 46)
+    public static final int MXSPE = 46;
+
+    // INTEGER LRW
+    // PARAMETER(LRW = (MXSPE-1)*(MXSPE-1+17) + 250)
+    public static final int LRW = (MXSPE - 1) * (MXSPE - 1 + 17) + 250;
+
+    // INTEGER NDET				! No. of Phdet runs.  defined in param
+    // PARAMETER (NDET = 3)
+    public static final int NDET = 3;
+
+    // INTEGER NDIS				! # of Ph dissoc
+    // PARAMETER (NDIS = 21)
+    public static final int NDIS = 21;
+
+    // INTEGER NEXC				! no. of photodissociation reactions
+    // PARAMETER (NEXC = 8)
+    public static final int NEXC = 8;
+
+    // INTEGER NIDIS				! No. of ion photodissociation reaxns
+    // PARAMETER (NIDIS = 5)
+    public static final int NIDIS = 5;
+
+    // INTEGER NION
+    // PARAMETER (NION = 13)
+    public static final int NION = 13;
+
+    // INTEGER INDXNO2
+    // PARAMETER (INDXNO2 = NION + NDET + NIDIS + 12)
+    public static final int INDXNO2 = NION + NDET + NIDIS + 12;
+
+    // INTEGER NMESH				! number of frequency groups for chemistry
+    // PARAMETER (NMESH = 42)
+    public static final int NMESH = 42;
+
+    // INTEGER LENIW				! used in DDRIV, = nchm+50
+    // INTEGER NCHM
+    // INTEGER NSIG				! no. of photo cross sections
+    // PARAMETER (NSIG  = NION + NDET + NIDIS + NDIS + NEXC)
+    public static final int NSIG = NION + NDET + NIDIS + NDIS + NEXC;
+    // PARAMETER (NCHM  = NSP-1)
+    public static final int NCHM = NSP - 1;
+    // PARAMETER (LENIW = NCHM+50)
+    public static final int LENIW = NCHM + 50;
+
+    // Placeholder parameters not defined in the snippet but used in variable declarations
+    public static final int MXVRT = 1; // Placeholder value
+    public static final int nhv = 1;   // Placeholder value
+
+    // -----------------------------------------------------------------
+
+    // Variables not part of any common block
+    // integer ichmend				! cell index to end chemistry loop
+    public static int ichmend;
+    // integer ichmstrt				! Cell index to begin chemistry loop
+    public static int ichmstrt;
+    // INTEGER INDX1(NXSEC), INDX2(NXSEC)
+    public static int[] INDX1 = new int[NXSEC];
+    public static int[] INDX2 = new int[NXSEC];
+
+    // ************************** COMMON BLOCKS *****************************
+
+    // COMMON /chem1/ CIJ, GIJ, PDTEK, prod, tklast, RWORK, sieadj, hnu3,
+    // &  tchmlast, tchm, tchm0, TCHMFRC, TLAST, TMPSWITCH2,
+    // &  tpmax, xh2o, echmtot, dsiemin, dsiemax, avgmw, eltfrac, wtmol,
+    // &  xn2, xo2
+    public static class Chem1 {
+        // real*8 CIJ(NSP,7)
+        public static double[][] CIJ = new double[NSP][7];
+        // real*8 GIJ(NSP,4)				! Number of atoms of each element per molecule
+        public static double[][] GIJ = new double[NSP][4];
+        // real*8 PDTEK(nhv,MXVRT)		! Contribution to PDTE from the k-th frequency band
+        public static double[][] PDTEK = new double[nhv][MXVRT];
+        // real*8 PROD			! production rate of ions due to gammas & neutrons?
+        public static double prod;
+        // real*8 tklast(mxvrt)		! Cell temperature the last time chemistry was done
+        public static double[] tklast = new double[MXVRT];
+        // real*8 RWORK(LRW)			! Scratch array in DDRIV
+        public static double[] RWORK = new double[LRW];
+        // real*8 sieadj(MXVRT)		! = SIE - CHMPOTNRG (?)
+        public static double[] sieadj = new double[MXVRT];
+        // real*8 hnu3(nhv)				! hnu^3, used in delmu
+        public static double[] hnu3 = new double[nhv];
+        // real*8 tchmlast(mxvrt)		! Last time chemistry was done for each cell
+        public static double[] tchmlast = new double[MXVRT];
+        // real*8 TCHM			! Time at which chemistry calculations are done for whole grid
+        public static double tchm;
+        // real*8 TCHM0
+        public static double tchm0;
+        // real*8 TCHMFRC			! fraction of elapsed time between successive chem calculations
+        public static double TCHMFRC;
+        // real*8 TLAST			! The last time that chemistry was done
+        public static double TLAST;
+        // real*8 TMPSWITCH2
+        public static double TMPSWITCH2;
+        // real*8 TPMAX(MXNTF)		! used in EQUIRO
+        public static double[] tpmax = new double[MXNTF];
+        // real*8 XH2O, xn2, xo2		! Mole fractions in ambient atmosphere
+        public static double xh2o;
+        public static double xn2;
+        public static double xo2;
+        // real*8 echmtot
+        public static double echmtot;
+        // real*8 dsiemin, dsiemax
+        public static double dsiemin;
+        public static double dsiemax;
+        // real*8 avgmw
+        public static double avgmw;
+        // real*8 eltfrac(4)
+        public static double[] eltfrac = new double[4];
+        // real*8 wtmol(4)
+        public static double[] wtmol = new double[4];
+    }
+
+    // COMMON /chem2/ ICHEM, ISTARTCHM, nchmcnt, indx3,
+    // 8  JCELL, MFMAXC, NCHEM, NEQUI, NREAC, NSPECI,
+    // &  iairstrt, irmxprev, itmxprev
+    public static class Chem2 {
+        // INTEGER ICHEM				! Chemistry switch
+        public static int ICHEM;
+        // INTEGER ISTARTCHM
+        public static int ISTARTCHM;
+        // integer nchmcnt			! # of times chemistry has been called
+        public static int nchmcnt;
+        // INTEGER INDX3(NSP)
+        public static int[] indx3 = new int[NSP];
+        // INTEGER JCELL
+        public static int JCELL;
+        // INTEGER MFMAXC			! highest frequency band being used by chemistry
+        public static int MFMAXC;
+        // INTEGER NCHEM			! = NSPECI-1, = number of chemical speicies not including M
+        public static int NCHEM;
+        // INTEGER NEQUI			! Number of species for which equilibireium rates are done
+        public static int NEQUI;
+        // INTEGER NREAC			! actual no. of chem reactions
+        public static int NREAC;
+        // INTEGER NSPECI			! No. of chemical species (including M)
+        public static int NSPECI;
+        // integer iairstrt				! index for first air cell, when using debris
+        public static int iairstrt;
+        // integer irmxprev
+        public static int irmxprev;
+        // integer itmxprev
+        public static int itmxprev;
+    }
+
+    // COMMON /INDSP/ INDE, INDWO2M, INDNO2M, INDOM, INDO2M, INDO3M,
+    // 8   INDW2NOP, INDOHH3OP, INDH3OP, INDWNOP, INDWO2P, INDNP, INDN2P,
+    // 8   INDN4P, INDNOP, INDOP, INDO2P, INDO4P, INDH, INDH2O, INDH2O2,
+    // 8   INDNH, INDHNO2, INDHNO3, INDOH, INDHO2, INDN, INDN2D, INDN2,
+    // 8   INDN2A3, INDN2O, INDN2O5, INDNO, INDNO2, INDNO3, INDO, INDO1D,
+    // &   INDO1S, INDO2, INDO2DL, INDO2SG, INDO3, INDM
+    public static class INDSP {
+        // INTEGER INDE				! electron species index
+        public static int INDE;
+        public static int INDWO2M;
+        public static int INDNO2M;
+        public static int INDOM;
+        public static int INDO2M;
+        public static int INDO3M;
+        public static int INDW2NOP;
+        public static int INDOHH3OP;
+        public static int INDH3OP;
+        public static int INDWNOP;
+        public static int INDWO2P;
+        public static int INDNP;
+        public static int INDN2P;
+        public static int INDN4P;
+        public static int INDNOP;
+        public static int INDOP;
+        public static int INDO2P;
+        public static int INDO4P;
+        public static int INDH;
+        public static int INDH2O;
+        public static int INDH2O2;
+        public static int INDNH;
+        public static int INDHNO2;
+        public static int INDHNO3;
+        public static int INDOH;
+        public static int INDHO2;
+        public static int INDN;
+        public static int INDN2D;
+        public static int INDN2;
+        public static int INDN2A3;
+        public static int INDN2O;
+        public static int INDN2O5;
+        public static int INDNO;
+        public static int INDNO2;
+        public static int INDNO3;
+        public static int INDO;
+        public static int INDO1D;
+        public static int INDO1S;
+        public static int INDO2;
+        public static int INDO2DL;
+        public static int INDO2SG;
+        public static int INDO3;
+        public static int INDM;
+    }
+
+    // COMMON /LC1/ AR, BR, CR, RMLIM, ICAT, ISTOCH, ICRTBL, INDXM
+    public static class LC1 {
+        // real*8 AR(NRCTN), BR(NRCTN), CR(NRCTN)	! rate expression, A(T/300)^B*exp(-c/T)
+        public static double[] AR = new double[NRCTN];
+        public static double[] BR = new double[NRCTN];
+        public static double[] CR = new double[NRCTN];
+        // real*8 RMLIM(NRCTN)			! Parameter used in reaction rate coefficients
+        public static double[] RMLIM = new double[NRCTN];
+        // INTEGER ICAT(NRCTN)			! Index of reaction category
+        public static int[] ICAT = new int[NRCTN];
+        // INTEGER ISTOCH(NST,NSP)		! # of atoms of given element in each species
+        public static int[][] ISTOCH = new int[NST][NSP];
+        // INTEGER ICRTBL(LTBL)			! Diffchem array
+        public static int[] ICRTBL = new int[LTBL];
+        // INTEGER INDXM(NRCTN)
+        public static int[] INDXM = new int[NRCTN];
+    }
+
+    // COMMON /LC2/ SYMB, EQNSIN, BCDXSEC, EQSYM
+    public static class LC2 {
+        // CHARACTER*6 SYMB(NRCTN)
+        public static String[] SYMB = new String[NRCTN];
+        // CHARACTER*58 EQNSIN(NRCTN)
+        public static String[] EQNSIN = new String[NRCTN];
+        // CHARACTER*6 BCDXSEC(NXSEC)
+        public static String[] BCDXSEC = new String[NXSEC];
+        // CHARACTER*6 EQSYM(NSP)
+        public static String[] EQSYM = new String[NSP];
+    }
+
+    // COMMON /PHOTCOM/ PHOTRCN, iphrj
+    public static class PHOTCOM {
+        // CHARACTER*66 PHOTRCN(NXSEC)
+        public static String[] PHOTRCN = new String[NXSEC];
+        // integer iphrj(nxsec)
+        public static int[] iphrj = new int[NXSEC];
+    }
+
+    // COMMON /SDRCOM/ RK
+    public static class SDRCOM {
+        // real*8 RK(NRCTN)			! Reaction rate coefficient
+        public static double[] RK = new double[NRCTN];
+    }
+
+    // COMMON /SXSEC/ SIGR, SIGNO2H, SIGABS
+    public static class SXSEC {
+        // real*8 SIGR(NMESH,NSIG)
+        public static double[][] SIGR = new double[NMESH][NSIG];
+        // real*8 SIGNO2H(13,6)
+        public static double[][] SIGNO2H = new double[13][6];
+        // real*8 SIGABS(NMESH,NSP)
+        public static double[][] SIGABS = new double[NMESH][NSP];
+    }
+
+    // COMMON /YSPACE/ YSAVE, YEQUI, YEQSV, YEQ, CHMPOTNRG
+    public static class YSPACE {
+        // real*8 YSAVE(NSP,MXVRT)		! mesh wide chemical species concentrations
+        public static double[][] YSAVE = new double[NSP][MXVRT];
+        // real*8 YEQUI(NSP,MXVRT)		! Mesh wide Equilibrium species concentrations
+        public static double[][] YEQUI = new double[NSP][MXVRT];
+        // real*8 YEQSV(NSP,MXVRT)		! = YSAVE - YEQUI
+        public static double[][] YEQSV = new double[NSP][MXVRT];
+        // real*8 YEQ(NSP)			! Equilibrium species concentrations
+        public static double[] YEQ = new double[NSP];
+        // real*8 CHMPOTNRG(MXVRT)			! Chemical Potential energy
+        public static double[] CHMPOTNRG = new double[MXVRT];
+    }
+
+    // common /bins78/ sigr78, sigabs78, signo2h78
+    public static class Bins78 {
+        // real*8 sigr78(78,nsig)
+        public static double[][] sigr78 = new double[78][NSIG];
+        // real*8 sigabs78(78,nsp)
+        public static double[][] sigabs78 = new double[78][NSP];
+        // real*8 signo2h78(78,6)
+        public static double[][] signo2h78 = new double[78][6];
+    }
+
+    // ************************** COMMON BLOCKS *****************************
+}
